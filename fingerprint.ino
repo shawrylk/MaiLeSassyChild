@@ -19,8 +19,8 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-const char* ssid = "SauMinhGrocery";
-const char* password = "goodmorning";
+const char* ssid = "Zut House lau 1";
+const char* password = "xincamon";
  
 // On Leonardo/Micro or others with hardware serial, use those! #0 is green wire, #1 is white
 // uncomment this line:
@@ -297,9 +297,10 @@ uint8_t downloadFingerprintTemplate(uint16_t id)
       while (index < uindx) ++index;
       uindx = index + 9;
   }
+  String sFinger;
   for (int i = 0; i < 512; ++i) {
        //Serial.print("0x");
-      printHex(fingerTemplate[i], 2);
+      sFinger += printHex(fingerTemplate[i], 2);
       //Serial.print(", ");
   }
   //TODO send this byte array to server
@@ -307,11 +308,11 @@ uint8_t downloadFingerprintTemplate(uint16_t id)
   
     HTTPClient http;  //Declare an object of class HTTPClient
     
-    http.begin("http://jsonplaceholder.typicode.com/posts");  //Specify request destination
+    http.begin("http://fingerscanbackend.senbac.com:8000/finger");  //Specify request destination
     //int httpCode = http.GET();                                                                  //Send the request
-    http.addHeader("Content-Type", "text/plain");
-    fingerTemplate[513] = '\0';
-    int httpCode = http.POST((char*)fingerTemplate);
+    http.addHeader("Content-Type", "application/json");
+    //Serial.println(sFinger);
+    int httpCode = http.POST("{ \"fingerString\": \"FFFFFFFFFFFFFFFFF015A120000FFFEFFFEFFFEFFFEE0FEC07EC01EC006C0028002000000000000000000000000000000000000000000000000000000000000322A971E51B0555E1FB1973E7432129E3EB3D5BE0F34581E09B9C05E1CBBD6DE2140EC1E5FA7697F1AA8415F5F3B53BF433FD43F0E4081BF63C2695F1AA2027521241A3A3097E01600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002AFFFFFFFFFFFFFFFFFFFFFF01560F0000FFFEFFFEFFFEFFFEE1FEC07EC00E800E800680028002000200000000000000000000000000000000000000000000000000001A1BC25E552B93FE5BAF693E5139D4FE1F3BD7BE3E3D957E0E3E169E0943C03E1932015F73B9521F4619D45C3D1B6AD41DAD58AE3E97D74C3BB4174A00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"}");
     if (httpCode > 0) { //Check the returning code
     
       String payload = http.getString();   //Get the request response payload
@@ -352,7 +353,7 @@ uint8_t downloadFingerprintTemplate(uint16_t id)
     Serial.println();
   }*/
 }
-void printHex(int num, int precision) {
+char* printHex(int num, int precision) {
     char tmp[16];
     char format[128];
 
@@ -360,6 +361,7 @@ void printHex(int num, int precision) {
  
     sprintf(tmp, format, num);
     Serial.print(tmp);
+    return tmp;
 }
 
 uint8_t deleteFingerprint(uint8_t id) {
