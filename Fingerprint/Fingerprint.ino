@@ -309,11 +309,6 @@ void registerFingerprintHandler()
 /**************************************************************************/
 void convertTemplateToString(char *bytesTemplate, char *strTemplate)
 {
-  if (sizeof(strTemplate) < 1050)
-  {
-    Serial.println("String template not large enough");
-    return;
-  }
   for (int i = 0; i < 512; i++)
   {
     sprintf(&strTemplate[i * 2 + 25], "%02X", bytesTemplate[i]);

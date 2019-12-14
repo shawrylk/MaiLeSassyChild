@@ -383,7 +383,11 @@ uint8_t Adafruit_Fingerprint::getStructuredPacket(Adafruit_Fingerprint_Packet *p
 {
   uint8_t byte;
   uint16_t idx = 0, timer = 0;
-
+#ifdef __STUB__
+  packet->data[0] = FINGERPRINT_OK;
+  packet->type = FINGERPRINT_ACKPACKET;
+  return FINGERPRINT_OK;
+#endif
   while (true)
   {
     while (!mySerial->available())
