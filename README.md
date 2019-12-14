@@ -24,7 +24,6 @@ Notepad++ v7.8 enhancements and bug-fixes:
 21. Fix Python folding collapse issue.
 22. Fix crash when sorting "out of range" columns.
 23. Fix find 2 times for the same occurrence in both original and cloned documents issue.
-24. Fix command line issues where filenames have multiple white spaces in them.
 
 Unicode
 1.  Fix popup dialog on startup regression regarding notepad replacement issue.
