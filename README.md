@@ -25,10 +25,6 @@ Notepad++ v7.8 enhancements and bug-fixes:
 22. Fix crash when sorting "out of range" columns.
 23. Fix find 2 times for the same occurrence in both original and cloned documents issue.
 24. Fix command line issues where filenames have multiple white spaces in them.
-25. Fix Document Peeker constantly changing focus problem.
-26. Make backward direction checkbox be also on Find dialog's Mark tab.
-27. Add 2 new columns for HTML Code in the Character Panel.
-28. Fix "clear all marks in find dialog also removes bookmarks" issue.
 
 Unicode
 1.  Fix popup dialog on startup regression regarding notepad replacement issue.
