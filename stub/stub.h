@@ -26,11 +26,11 @@ class SerialStub
 public:
     SerialStub() {}
 
-    void print(const char * str) { std::cout << str; }
+    void print(const char *str) { std::cout << str; }
     void print(int num) { std::cout << num; }
     void print(std::string str) { std::cout << str; }
 
-    void println(const char * str) { std::cout << str << std::endl; }
+    void println(const char *str) { std::cout << str << std::endl; }
     void println(std::string str) { std::cout << str << std::endl; }
     void println(int num) { std::cout << num << std::endl; }
 
@@ -46,7 +46,7 @@ class Stream
 {
 public:
     void write(...) {}
-    char read(...) { return 0; }
+    char read(...) { return 0xFF; }
     bool available(...) { return false; }
 };
 
@@ -73,9 +73,14 @@ public:
 
     void addHeader(...) {}
 
-    std::string &&getString(...) { return std::move(std::string("")); }
+    std::string getString(...) { return std::string(""); }
 
-    int POST(...) { return 0; }
+    int POST(const char *str)
+    {
+        std::cout << "POST: " << str << std::endl;
+        std::cout << "Length: " << strlen(str) << std::endl;
+        return 0;
+    }
 };
 
 class WifiStub
@@ -85,7 +90,7 @@ public:
 
     int status(...) { return 0; }
 
-    std::string &&macAddress(...) { return std::move(std::string("")); }
+    std::string macAddress() { return std::string("5E-51-4F-9B-BB-A3"); }
 };
 
 class ESPStub

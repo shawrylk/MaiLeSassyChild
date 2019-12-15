@@ -151,7 +151,7 @@ private:
   uint32_t theAddress;
   uint8_t recvPacket[20];
   uint8_t bytesReceived[534];
-
+  uint8_t uploadFinger(void);
   Stream *mySerial;
 #if defined(__AVR__) || defined(ESP8266) || defined(FREEDOM_E300_HIFIVE1)
   SoftwareSerial *swSerial;

@@ -10,7 +10,11 @@ int main()
     setup();
     while (1)
     {
-        printf("Enter mode:\n\t0. Enroll\n\t1. Register new fingerprint\n\t2. Update database\n\tPress Ctrl + C to exit\n");
+        printf("Enter mode:\n\t \
+        0. Enroll\n\t \
+        1. Register new fingerprint\n\t \
+        2. Update database\n\t \
+        Press Ctrl + C to exit\n");
         std::cin >> mymode;
         if (std::cin.fail())
         {

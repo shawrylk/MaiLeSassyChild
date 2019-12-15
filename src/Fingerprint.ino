@@ -6,97 +6,61 @@
 #include "stdio.h"
 #include "string.h"
 
-#define CHECK_RESPONSE(func)                           \
-  {                                                    \
-    int rtc = func;                                    \
-    switch (rtc)                                       \
-    {                                                  \
-    case FINGERPRINT_OK:                               \
-      Serial.print(#func);                             \
-      Serial.print(" :");                              \
-      Serial.print(__LINE__);                          \
-      Serial.print(" :");                              \
-      Serial.print(" :");                              \
-      Serial.print(__LINE__);                          \
-      Serial.print(" :");                              \
-      Serial.println(" FINGERPRINT_OK");               \
-      break;                                           \
-    case FINGERPRINT_NOFINGER:                         \
-      Serial.print(#func);                             \
-      Serial.print(" :");                              \
-      Serial.print(__LINE__);                          \
-      Serial.print(" :");                              \
-      Serial.println(" FINGERPRINT_NOFINGER");         \
-      break;                                           \
-    case FINGERPRINT_PACKETRECIEVEERR:                 \
-      Serial.print(#func);                             \
-      Serial.print(" :");                              \
-      Serial.print(__LINE__);                          \
-      Serial.print(" :");                              \
-      Serial.println(" FINGERPRINT_PACKETRECIEVEERR"); \
-      break;                                           \
-    case FINGERPRINT_IMAGEFAIL:                        \
-      Serial.print(#func);                             \
-      Serial.print(" :");                              \
-      Serial.print(__LINE__);                          \
-      Serial.print(" :");                              \
-      Serial.println(" FINGERPRINT_IMAGEFAIL");        \
-      break;                                           \
-    default:                                           \
-      Serial.print(#func);                             \
-      Serial.print(" :");                              \
-      Serial.print(__LINE__);                          \
-      Serial.print(" :");                              \
-      Serial.println(" default");                      \
-      break;                                           \
-    }                                                  \
+#define PRINT_INFO(func, str) \
+  Serial.print(#func);        \
+  Serial.print(" -> ");  \
+  Serial.print(str);          \
+  Serial.print(" on line ");    \
+  Serial.println(__LINE__);
+
+#define CHECK_RESPONSE(func)                             \
+  {                                                      \
+    int rtc = func;                                      \
+    switch (rtc)                                         \
+    {                                                    \
+    case FINGERPRINT_OK:                                 \
+      PRINT_INFO(func, "FINGERPRINT_OK");               \
+      break;                                             \
+    case FINGERPRINT_NOFINGER:                           \
+      PRINT_INFO(func, "FINGERPRINT_NOFINGER");         \
+      break;                                             \
+    case FINGERPRINT_PACKETRECIEVEERR:                   \
+      PRINT_INFO(func, "FINGERPRINT_PACKETRECIEVEERR"); \
+      break;                                             \
+    case FINGERPRINT_IMAGEFAIL:                          \
+      PRINT_INFO(func, "FINGERPRINT_IMAGEFAIL");        \
+      break;                                             \
+    default:                                             \
+      PRINT_INFO(func, "default");                      \
+      break;                                             \
+    }                                                    \
   }
 
-#define CHECK_RESPONSE_LOOP(func, value)                 \
-  {                                                      \
-    int rtc = -1;                                        \
-    while (rtc != value)                                 \
-    {                                                    \
-      rtc = func;                                        \
-      switch (rtc)                                       \
-      {                                                  \
-      case FINGERPRINT_OK:                               \
-        Serial.print(#func);                             \
-        Serial.print(" :");                              \
-        Serial.print(__LINE__);                          \
-        Serial.print(" :");                              \
-        Serial.println(" FINGERPRINT_OK");               \
-        break;                                           \
-      case FINGERPRINT_NOFINGER:                         \
-        Serial.print(#func);                             \
-        Serial.print(" :");                              \
-        Serial.print(__LINE__);                          \
-        Serial.print(" :");                              \
-        Serial.println(" FINGERPRINT_NOFINGER");         \
-        break;                                           \
-      case FINGERPRINT_PACKETRECIEVEERR:                 \
-        Serial.print(#func);                             \
-        Serial.print(" :");                              \
-        Serial.print(__LINE__);                          \
-        Serial.print(" :");                              \
-        Serial.println(" FINGERPRINT_PACKETRECIEVEERR"); \
-        break;                                           \
-      case FINGERPRINT_IMAGEFAIL:                        \
-        Serial.print(#func);                             \
-        Serial.print(" :");                              \
-        Serial.print(__LINE__);                          \
-        Serial.print(" :");                              \
-        Serial.println(" FINGERPRINT_IMAGEFAIL");        \
-        break;                                           \
-      default:                                           \
-        Serial.print(#func);                             \
-        Serial.print(" :");                              \
-        Serial.print(__LINE__);                          \
-        Serial.print(" :");                              \
-        Serial.println(" default");                      \
-        break;                                           \
-      }                                                  \
-    }                                                    \
+#define CHECK_RESPONSE_LOOP(func, value)                   \
+  {                                                        \
+    int rtc = -1;                                          \
+    while (rtc != value)                                   \
+    {                                                      \
+      rtc = func;                                          \
+      switch (rtc)                                         \
+      {                                                    \
+      case FINGERPRINT_OK:                                 \
+        PRINT_INFO(func, "FINGERPRINT_OK");               \
+        break;                                             \
+      case FINGERPRINT_NOFINGER:                           \
+        PRINT_INFO(func, "FINGERPRINT_NOFINGER");         \
+        break;                                             \
+      case FINGERPRINT_PACKETRECIEVEERR:                   \
+        PRINT_INFO(func, "FINGERPRINT_PACKETRECIEVEERR"); \
+        break;                                             \
+      case FINGERPRINT_IMAGEFAIL:                          \
+        PRINT_INFO(func, "FINGERPRINT_IMAGEFAIL");        \
+        break;                                             \
+      default:                                             \
+        PRINT_INFO(func, "default");                      \
+        break;                                             \
+      }                                                    \
+    }                                                      \
   }
 
 // TODO: Configure interrupt pins
@@ -208,9 +172,9 @@ void updateDB()
 void enrollHandler()
 {
   int rtc;
-    // To hold string header + template + null terminated character
-  char myTemplate[1050];
-  memset(myTemplate, 0x00, sizeof(myTemplate));
+  // To hold string header + template + null terminated character
+  char myTemplate[1043];
+  memset(myTemplate, 0x24, sizeof(myTemplate));
   // Get image of fingerprint
   CHECK_RESPONSE_LOOP(finger.getImage(), FINGERPRINT_OK);
   // Convert image to character file and store to CharBuffer1
@@ -225,7 +189,6 @@ void enrollHandler()
     CHECK_RESPONSE(finger.getModel());
     // Convert array of raw bytes to array of hexa characer for human reading purpose
     convertTemplateToString(finger.fingerTemplate, myTemplate);
-    Serial.println(myTemplate);
     // Send template to server
     rtc = sendTemplateToServer(&myTemplate[0]);
     // TODO: handle abnormal case
@@ -265,8 +228,8 @@ void registerFingerprintHandler()
 {
   int rtc = -1;
   // To hold string header + template + null terminated character
-  char myTemplate[1050];
-  memset(myTemplate, 0x00, sizeof(myTemplate));
+  char myTemplate[1043];
+  memset(myTemplate, 0x24, sizeof(myTemplate));
   // Get image of fingerprint
   CHECK_RESPONSE_LOOP(finger.getImage(), FINGERPRINT_OK);
   // Convert image to character file and store to CharBuffer1
@@ -286,7 +249,6 @@ void registerFingerprintHandler()
   CHECK_RESPONSE(finger.getModel());
   // Convert array of raw bytes to array of hexa characer for human reading purpose
   convertTemplateToString(finger.fingerTemplate, myTemplate);
-  Serial.println(myTemplate);
   // Send template to server
   rtc = sendTemplateToServer(&myTemplate[0]);
   // TODO: handle abnormal case
@@ -311,7 +273,7 @@ void convertTemplateToString(char *bytesTemplate, char *strTemplate)
 {
   for (int i = 0; i < 512; i++)
   {
-    sprintf(&strTemplate[i * 2 + 25], "%02X", bytesTemplate[i]);
+    sprintf(&strTemplate[i * 2 + 18], "%02X", bytesTemplate[i]);
   }
   strTemplate[1025] = '\0';
 }
@@ -327,7 +289,8 @@ int sendTemplateToServer(char *strTemplate)
   int rtc = SEND_ERROR;
   if (WiFi.status() == WL_CONNECTED)
   {
-    sprintf(&strTemplate[0], "%s", WiFi.macAddress().c_str());
+    memcpy(&strTemplate[0], WiFi.macAddress().c_str(), 17);
+    strTemplate[17] = ',';
     int httpCode = http.POST(strTemplate);
     if (httpCode > 0)
     {

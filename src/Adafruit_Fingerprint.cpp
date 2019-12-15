@@ -197,7 +197,10 @@ uint8_t Adafruit_Fingerprint::loadModel(uint16_t location)
 {
   SEND_CMD_PACKET(FINGERPRINT_LOAD, 0x01, (uint8_t)(location >> 8), (uint8_t)(location & 0xFF));
 }
-
+uint8_t Adafruit_Fingerprint::uploadFinger()
+{
+  SEND_CMD_PACKET(FINGERPRINT_UPLOAD, 0x01);
+}
 /**************************************************************************/
 /*!
     @brief   Ask the sensor to transfer 256-byte fingerprint template from the buffer to the UART
@@ -206,10 +209,19 @@ uint8_t Adafruit_Fingerprint::loadModel(uint16_t location)
 */
 uint8_t Adafruit_Fingerprint::getModel(void)
 {
+
   uint32_t starttime = 0;
   int uindx = 9, index = 0, i = 0, index2 = 0;
-
-  SEND_CMD_PACKET(FINGERPRINT_UPLOAD, 0x01);
+  int rtc;
+  rtc = uploadFinger();
+  if (rtc != FINGERPRINT_OK)
+  {
+    return rtc;
+  }
+#ifdef __STUB__
+  memset(&fingerTemplate, 0x11, sizeof(fingerTemplate));
+  return FINGERPRINT_OK;
+#endif
   starttime = millis();
 
   // Data format;
