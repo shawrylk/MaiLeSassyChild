@@ -10,13 +10,13 @@ int main()
     setup();
     while (1)
     {
-        printf("Enter mode:\n\t0. Enroll\n\t1.Register new fingerprint\n\t2.Update database\n");
+        printf("Enter mode:\n\t0. Enroll\n\t1. Register new fingerprint\n\t2. Update database\n\tPress Ctrl + C to exit\n");
         std::cin >> mymode;
         if (std::cin.fail())
         {
-            std::cout << "Not regconize mode, try enter again ...\n";
+            std::cout << "Not regconize mode, try input again ...\n";
             std::cin.clear();
-            std::cin.ignore(256,'\n');
+            std::cin.ignore(256, '\n');
             continue;
         }
         switch (mymode)
@@ -25,9 +25,9 @@ int main()
         case 1:
         case 2:
             mode = mymode;
-            break;    
+            break;
         default:
-            std::cout << "Not regconize mode, try enter again ...\n";
+            std::cout << "Not regconize mode, try input again ...\n";
             continue;
         }
         loop();
