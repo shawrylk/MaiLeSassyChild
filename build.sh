@@ -34,7 +34,7 @@ then
 	STUB_H=$(find $HOME/$STUB -name *.h -printf "%f ")
 	setup_stub
 	echo "*****Start compiling*****"
-	g++ -o $HOME/Finger $HOME/$SOURCE/*.cpp -I $HOME/$INCLUDE -std=gnu++17 -Wno-narrowing  -Wno-write-strings
+	g++ -o $HOME/Finger $HOME/$SOURCE/*.cpp -I $HOME/$INCLUDE -std=gnu++17 -Wno-narrowing  -Wno-write-strings -pthread
 	if [ $? == 1 ]
 	then
 		echo "Compilation fail, exit script"

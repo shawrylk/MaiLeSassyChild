@@ -6,6 +6,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+#include <unistd.h>
+#include <csignal>
 
 #define uint8_t unsigned char
 #define uint16_t unsigned short
@@ -18,21 +23,25 @@
 #define ESP8266 1
 #define BYTE 0
 #define __STUB__
-// #define while   printf("line: %d\nfile: %s\n", __LINE__, __FILE__); \
-                while
+
+extern volatile int mode;
+extern std::condition_variable cv;
+extern std::mutex m;
+extern bool ready;
+
 class SerialStub
 {
 
 public:
     SerialStub() {}
 
-    void print(const char *str) { std::cout << str; }
-    void print(int num) { std::cout << num; }
-    void print(std::string str) { std::cout << str; }
+    void print(const char *str) { std::cout << "Arduino: " << str; }
+    void print(int num) { std::cout << "Arduino: " << num; }
+    void print(std::string str) { std::cout << "Arduino: " << str; }
 
-    void println(const char *str) { std::cout << str << std::endl; }
-    void println(std::string str) { std::cout << str << std::endl; }
-    void println(int num) { std::cout << num << std::endl; }
+    void println(const char *str) { std::cout << "Arduino: " << str << std::endl; }
+    void println(std::string str) { std::cout << "Arduino: " << str << std::endl; }
+    void println(int num) { std::cout << "Arduino: " << num << std::endl; }
 
     void begin(int a) {}
 
@@ -73,13 +82,12 @@ public:
 
     void addHeader(...) {}
 
-    std::string getString(...) { return std::string(""); }
+    std::string getString(...) { return std::string("OK"); }
 
     int POST(const char *str)
     {
-        std::cout << "POST: " << str << std::endl;
-        std::cout << "Length: " << strlen(str) << std::endl;
-        return 0;
+        std::cout << "Arduino: POST: " << str << std::endl;
+        return 1;
     }
 };
 
@@ -96,26 +104,51 @@ public:
 class ESPStub
 {
 public:
-    void deepSleep(...) {}
+    void deepSleep(...)
+    {
+        std::cout << "Sleep forever\n\n";
+        while (1)
+        {
+        };
+    }
+};
+class JsonObject
+{
+public:
+    bool success() { return true; }
+
+    int operator[](String index)
+    {
+        if (index == "Mode")
+        {
+            std::unique_lock<std::mutex> lk(m);
+            cv.wait(lk, [] { return ready; });
+            ready = false;
+            return mode;
+        }
+        return 0;
+    }
+};
+template <int i>
+class StaticJsonBuffer
+{
+public:
+    static JsonObject &parseObject(String str)
+    {
+        static JsonObject js;
+        return js;
+    }
 };
 
-void pinMode(...);
-
-void attachInterrupt(...);
-
-void registerFingerprint();
-
-void updateDB();
-
-void delay(...);
+void delay(int secs);
 
 void enrollHandler();
 
 void updateDBHandler();
 
-int sendTemplateToServer(char *strTemplate);
+int sendInfoToServer(String *strTemplate);
 
-void convertTemplateToString(char *bytesTemplate, char *strTemplate);
+void convertTemplateToString(char *bytesTemplate, String *strTemplate);
 
 void registerFingerprintHandler();
 
@@ -131,5 +164,4 @@ extern WifiStub WiFi;
 
 extern ESPStub ESP;
 
-extern volatile int mode;
 #endif
