@@ -41,6 +41,8 @@
   GET_CMD_PACKET(__VA_ARGS__); \
   return packet.data[0];
 
+#define STRING_TO_HEX(str) \
+  str > 64 ? str - 55 : str - 48
 /***************************************************************************
  PUBLIC FUNCTIONS
  ***************************************************************************/
@@ -456,4 +458,64 @@ uint8_t Adafruit_Fingerprint::getStructuredPacket(Adafruit_Fingerprint_Packet *p
   }
   // Shouldn't get here so...
   return FINGERPRINT_BADPACKET;
+}
+
+uint8_t Adafruit_Fingerprint::downloadFinger()
+{
+  SEND_CMD_PACKET(FINGERPRINT_DOWNLOAD, 0x01);
+}
+
+uint8_t Adafruit_Fingerprint::downloadModel(int ID, char *template)
+{
+  int rtc;
+  rtc = downloadFinger();
+  if (rtc ! + FINGERPRINT_OK)
+  {
+    return rtc;
+  }
+  uint8_t data1[267], data2[267];
+  formatPack(1, data1, template);
+  formatPack(2, data2, template);
+  mySerial->write(data1, sizeof(data1));
+  mySerial->write(data2, sizeof(data1));
+}
+
+void Adafruit_Fingerprint::formatPack(uint8_t packNo, uint_8 *data, char *template)
+{
+  int i;
+  int offset;
+  if (pack == 1)
+  {
+    offset = 0;
+  }
+  else
+  {
+    offset = 256;
+  }
+
+  memset(&data, 0x00, sizeof(data));
+  // header
+  data[0] = 0xEF;
+  data[1] = 0x01;
+  // address
+  data[2] = 0xFF;
+  data[3] = 0xFF;
+  data[4] = 0xFF;
+  data[5] = 0xFF;
+  // type
+  data[6] = 0x02;
+  //length
+  data[7] = 0x01;
+  data[8] = 0x02;
+  //data
+  for (i = 0; i < 256; i++)
+  {
+    data[i + 9] = STRING_TO_HEX(template[i + offset]) * 16 + STRING_TO_HEX(template[i + 1 + offset]);
+  }
+  // checksum = type + length + data
+  uint16_t sum = 0;
+  for (uint8_t i = 6; i < 265; i++)
+  {
+    sum += data[i];
+  }
 }
