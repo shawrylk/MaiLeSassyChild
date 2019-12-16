@@ -64,6 +64,7 @@
 #define FINGERPRINT_STORE 0x06
 #define FINGERPRINT_LOAD 0x07
 #define FINGERPRINT_UPLOAD 0x08
+#define FINGERPRINT_DOWNLOAD 0x09
 #define FINGERPRINT_DELETE 0x0C
 #define FINGERPRINT_EMPTY 0x0D
 #define FINGERPRINT_SETPASSWORD 0x12
@@ -125,6 +126,7 @@ public:
   uint8_t image2Tz(uint8_t slot = 1);
   uint8_t createModel(void);
 
+  uint8_t downloadModel(int ID, String template);
   uint8_t emptyDatabase(void);
   uint8_t storeModel(uint16_t id);
   uint8_t loadModel(uint16_t id);
@@ -152,6 +154,8 @@ private:
   uint8_t recvPacket[20];
   uint8_t bytesReceived[534];
   uint8_t uploadFinger(void);
+  uint8_t downloadFinger(void);
+  void formatPack(uint8_t packNo, uint_8 *data, String template);
   Stream *mySerial;
 #if defined(__AVR__) || defined(ESP8266) || defined(FREEDOM_E300_HIFIVE1)
   SoftwareSerial *swSerial;
