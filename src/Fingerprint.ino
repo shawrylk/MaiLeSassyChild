@@ -313,6 +313,33 @@ void updateDBHandler()
   Serial.println("Update DataBase");
 #ifdef __STUB__
   delay(5);
-#endif
   ESP.deepSleep(0);
+#endif
+  // int httpCode = http.POST("{\"Request\": \"Mode\"}");
+  // if (httpCode > 0)
+  // {
+  //   String payload = http.getString();
+  //   JsonObject &root = jsonBuffer.parseObject(payload);
+  //   if (!root.success())
+  //   {
+  //     Serial.println("parseObject() failed");
+  //     return;
+  //   }
+  //   mode = root["Mode"];
+  //   switch (mode)
+  //   {
+  //   case ENROLL:
+  //     Serial.println("Mode: ENROLL");
+  //     break;
+  //   case REGISTER_FINGERPRINT:
+  //     Serial.println("Mode: REGISTER_FINGERPRINT");
+  //     break;
+  //   case UPDATE_DB:
+  //     Serial.println("Mode: UPDATE_DB");
+  //     break;
+  //   default:
+  //     Serial.println("Mode: invalid");
+  //     return;
+  //   }
+  // }
 }
